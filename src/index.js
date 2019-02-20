@@ -19,7 +19,8 @@ class TextInput extends PureComponent {
 		showCursor: PropTypes.bool,
 		stdin: PropTypes.object.isRequired,
 		setRawMode: PropTypes.func.isRequired,
-		onChange: PropTypes.func.isRequired
+		onChange: PropTypes.func.isRequired,
+		onSubmit: PropTypes.func
 	}
 
 	static defaultProps = {
@@ -92,12 +93,17 @@ class TextInput extends PureComponent {
 
 		const s = String(data);
 
-		if (s === ARROW_UP || s === ARROW_DOWN || s === ENTER || s === CTRL_C) {
+		if (s === ARROW_UP || s === ARROW_DOWN || s === CTRL_C) {
 			return;
 		}
 
 		let cursorOffset = originalCursorOffset;
 		let value = originalValue;
+
+		if (s === ENTER && this.props.onSubmit) {
+			this.props.onSubmit(value);
+			return;
+		}
 
 		if (s === ARROW_LEFT) {
 			if (showCursor && !mask) {
